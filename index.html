@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liferay Properties to Env Variables Converter</title>
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css"/>
+</head>
+<body class="pa4 avenir">
+    <div class="mw7 center pa4 br2-ns ba b--light-blue bg-lightest-blue">
+        <h1 class="mt0">Liferay Properties to Env Variables Converter</h1>
+        <div class="cf">
+            <div class="fl w-100 pa2">
+                <label for="liferayProp" class="f6 b db mb2">Liferay Property:</label>
+                <input type="text" id="liferayProp" oninput="updateEnvVariable()" class="input-reset ba b--black-20 pa2 mb2 db w-100" />
+            </div>
+            <div class="fl w-100 pa2">
+                <label for="envVar" class="f6 b db mb2">Environment Variable:</label>
+                <input type="text" id="envVar" readonly class="input-reset ba b--black-20 pa2 mb2 db w-100" />
+            </div>
+        </div>
+    </div>
+    <script>
+        function updateEnvVariable() {
+            let liferayProp = document.getElementById('liferayProp').value;
+            let envVar = convertliferayPropertiesToEnvVariables(liferayProp);
+            document.getElementById('envVar').value = envVar;
+        }
+
+        function convertliferayPropertiesToEnvVariables(liferayProp) {
+            // Define mapping from specific characters to their environment variable equivalents.
+            const replaceChars = {
+                '.': '_PERIOD_',
+                '[': '_OPENBRACKET_',
+                ']': '_CLOSEBRACKET_',
+                ':': '_COLON_',
+                ',': '_COMMA_',
+                '^': '_CARET_',
+                '_': '_UNDERLINE_'
+            };
+
+            let envVar = 'LIFERAY_';
+
+            for (let char of liferayProp.split('')) {
+                if (char in replaceChars) {
+                    // Replace special characters with their respective strings.
+                    envVar += replaceChars[char];
+                } else if (char === char.toUpperCase() && char !== char.toLowerCase()) {
+                    // If it's an uppercase character, add 'UPPERCASE' before the character.
+                    envVar += 'UPPERCASE' + char;
+                } else {
+                    // If it's a lowercase character, just convert to uppercase.
+                    envVar += char.toUpperCase();
+                }
+            }
+
+            // Remove the LIFERAY_ prefix if it's not a valid prefix for the string
+            if (!liferayProp.startsWith('liferay.')) {
+                envVar = envVar.substring(8);
+            }
+
+            return envVar;
+        }
+
+    </script>
+</body>
+</html>
