@@ -49,7 +49,7 @@
                     envVar += replaceChars[char];
                 } else if (char === char.toUpperCase() && char !== char.toLowerCase()) {
                     // If it's an uppercase character, add 'UPPERCASE' before the character.
-                    envVar += 'UPPERCASE' + char;
+                    envVar += '_UPPERCASE' + char + '_';
                 } else {
                     // If it's a lowercase character, just convert to uppercase.
                     envVar += char.toUpperCase();
